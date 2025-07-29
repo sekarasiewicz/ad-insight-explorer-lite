@@ -1,0 +1,24 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - SERVER_PORT=${SERVER_PORT:-8000}
+      - SERVER_HOST=${SERVER_HOST:-0.0.0.0}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - INPUT_FILE=${INPUT_FILE:-data/input.txt}
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped 
