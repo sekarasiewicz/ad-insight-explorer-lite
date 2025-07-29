@@ -1,19 +1,25 @@
-# API server
-:{$PORT} {
-	handle /api/* {
-		reverse_proxy {$BACKEND_URL}
+:80 {
+	# Health check endpoint
+	@health {
+		path /health
+	}
+	handle @health {
+		reverse_proxy backend:8000
 	}
 
-	handle /health {
-		reverse_proxy {$BACKEND_URL}
+	# API endpoints
+	@api {
+		path /api/*
+	}
+	handle @api {
+		reverse_proxy backend:8000
 	}
 
-	handle /docs {
-		reverse_proxy {$BACKEND_URL}
+	# Serve static files for everything else
+	@static {
+		not path /health /api/*
 	}
-
-	# Fallback to React app
-	handle /* {
+	handle @static {
 		root * /usr/share/caddy/html
 		file_server
 		try_files {path} /index.html

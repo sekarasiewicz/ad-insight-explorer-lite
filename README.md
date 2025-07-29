@@ -244,27 +244,36 @@ make run-docker
 
 This starts:
 - **Backend API**: FastAPI server on port 8000
-- **Frontend**: Caddy web server on port 80 (with automatic HTTPS support)
-- **All services**: Running in production mode with optimized settings
+- **Frontend**: Vite dev server on port 3000
+- **All services**: Running in development mode
 
-### DigitalOcean App Platform Deployment (Recommended)
+### DigitalOcean Droplet Deployment (Recommended)
 
-For production deployment, we recommend using [DigitalOcean App Platform](https://digitalocean.com/products/app-platform):
+For production deployment, we recommend using a DigitalOcean Droplet for full control and reliability:
 
-1. **Quick Deploy**: Follow the detailed guide in [DIGITALOCEAN_DEPLOYMENT.md](./DIGITALOCEAN_DEPLOYMENT.md)
+1. **Quick Deploy**: Follow the detailed guide in [DROPLET_DEPLOYMENT.md](./DROPLET_DEPLOYMENT.md)
 
 2. **Automated Deployment**: Run the deployment script:
    ```bash
-   ./deploy-digitalocean.sh
+   ./deploy-droplet.sh
    ```
 
-DigitalOcean App Platform provides:
-- ✅ Simple Git-based deployments
-- ✅ Native Docker support
-- ✅ Automatic SSL certificates
-- ✅ Global CDN and auto-scaling
-- ✅ Cost-effective pricing ($5/month per service)
-- ✅ Built-in monitoring and logs
+   **Note**: The script requires an existing Droplet. If you don't have one, create it manually:
+   ```bash
+   doctl compute droplet create ad-insight-explorer --size s-1vcpu-1gb --image ubuntu-22-04-x64 --region nyc1 --ssh-keys <your-ssh-key-id>
+   ```
+
+DigitalOcean Droplet provides:
+- ✅ Full control over the environment
+- ✅ Reliable Docker and Docker Compose deployment
+- ✅ Automatic SSL certificates with Let's Encrypt
+- ✅ Cost-effective pricing (~$6/month)
+- ✅ Easy monitoring and maintenance
+- ✅ No build platform restrictions
+
+### DigitalOcean App Platform Deployment (Alternative)
+
+For App Platform deployment, see [DIGITALOCEAN_DEPLOYMENT.md](./DIGITALOCEAN_DEPLOYMENT.md).
 
 
 
@@ -282,9 +291,8 @@ LOG_LEVEL=INFO
 SHORT_TITLE_THRESHOLD=15
 BOT_DETECTION_THRESHOLD=5
 
-# DigitalOcean-specific (auto-configured)
-PORT=8080
-BACKEND_URL=https://your-backend-service.ondigitalocean.app
+# Frontend Configuration
+VITE_API_BASE_URL=http://localhost:8000
 ```
 
 ## 📋 Recruitment Task Requirements

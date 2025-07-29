@@ -1,20 +1,16 @@
-name: ad-insight-explorer-lite-backend
+name: ad-insight-frontend
 services:
-  - name: backend
-    source_dir: /
-    dockerfile_path: Dockerfile
+  - name: frontend
+    source_dir: frontend
+    dockerfile_path: Dockerfile.prod
     github:
       repo: sekarasiewicz/ad-insight-explorer-lite
       branch: main
     instance_count: 1
     instance_size_slug: basic-xxs
     envs:
-      - key: SERVER_PORT
+      - key: PORT
         value: "8080"
-      - key: SERVER_HOST
-        value: "0.0.0.0"
-      - key: LOG_LEVEL
-        value: "INFO"
 
 ingress:
   rules:
@@ -22,4 +18,4 @@ ingress:
         path:
           prefix: "/"
       component:
-        name: backend 
+        name: frontend 
