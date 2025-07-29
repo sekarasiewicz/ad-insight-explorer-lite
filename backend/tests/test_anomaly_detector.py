@@ -1,4 +1,3 @@
-import pytest
 from app.services.anomaly_detector import AnomalyDetector
 from app.models import Post
 

@@ -1,4 +1,3 @@
-import pytest
 from app.services.text_analyzer import TextAnalyzer
 from app.models import Post
 
