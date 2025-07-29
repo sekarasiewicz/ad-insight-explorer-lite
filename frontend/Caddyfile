@@ -1,15 +1,15 @@
 # API server
-:80 {
+:{$PORT} {
 	handle /api/* {
-		reverse_proxy backend:8000
+		reverse_proxy {$BACKEND_URL}
 	}
 
 	handle /health {
-		reverse_proxy backend:8000
+		reverse_proxy {$BACKEND_URL}
 	}
 
 	handle /docs {
-		reverse_proxy backend:8000
+		reverse_proxy {$BACKEND_URL}
 	}
 
 	# Fallback to React app

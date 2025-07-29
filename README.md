@@ -16,7 +16,7 @@ This application processes data from the JSONPlaceholder API to identify anomali
 
 ## 🏗️ Architecture
 
-- **Backend**: FastAPI (Python) with anomaly detection and text analysis services
+- **Backend**: FastAPI (Python 3.13) with anomaly detection and text analysis services
 - **Frontend**: React + TypeScript + Vite with shadcn/ui components
 - **Data Source**: JSONPlaceholder API (https://jsonplaceholder.typicode.com/posts)
 - **Deployment**: Docker Compose for both development and production environments
@@ -27,7 +27,7 @@ This application processes data from the JSONPlaceholder API to identify anomali
 
 - Docker and Docker Compose
 - Node.js 18+ (for local development)
-- Python 3.8+ (for local development)
+- Python 3.13+ (for local development)
 
 ### Running the Application
 
@@ -57,7 +57,7 @@ Access the application:
 
 ```bash
 # Backend (from backend/ directory)
-python3 -m uvicorn app.main:app --reload --port 8000
+python3.13 -m uvicorn app.main:app --reload --port 8000
 
 # Frontend (from frontend/ directory)
 npm run dev
@@ -236,7 +236,7 @@ make test-coverage
 
 ## 🚀 Deployment
 
-### Docker Deployment
+### Local Docker Deployment
 
 ```bash
 make run-docker
@@ -246,6 +246,21 @@ This starts:
 - **Backend API**: FastAPI server on port 8000
 - **Frontend**: Caddy web server on port 80 (with automatic HTTPS support)
 - **All services**: Running in production mode with optimized settings
+
+### Railway Deployment (Recommended)
+
+For production deployment, we recommend using [Railway](https://railway.com/):
+
+1. **Quick Deploy**: [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/new?template=https://github.com/your-username/ad-insight-explorer-lite)
+
+2. **Manual Setup**: Follow the detailed guide in [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md)
+
+Railway provides:
+- ✅ Automatic HTTPS and custom domains
+- ✅ Built-in monitoring and observability
+- ✅ Zero-downtime deployments
+- ✅ Automatic scaling
+- ✅ GitHub integration with auto-deploy
 
 ### Environment Configuration
 
@@ -259,8 +274,11 @@ LOG_LEVEL=INFO
 
 # Analysis Configuration
 SHORT_TITLE_THRESHOLD=15
-SIMILARITY_THRESHOLD=0.8
 BOT_DETECTION_THRESHOLD=5
+
+# Railway-specific (auto-configured)
+PORT=$PORT
+BACKEND_URL=https://your-backend-service.railway.app
 ```
 
 ## 📋 Recruitment Task Requirements

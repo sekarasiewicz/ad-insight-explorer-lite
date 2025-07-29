@@ -32,4 +32,4 @@ test-coverage: ## Run frontend tests with coverage
 	cd frontend && npm run test:coverage
 
 test-backend: ## Run backend tests locally
-	cd backend && ./venv/bin/python -m pytest tests/ -v
+	cd backend && ./venv/bin/python3.13 -m pytest tests/ -v
