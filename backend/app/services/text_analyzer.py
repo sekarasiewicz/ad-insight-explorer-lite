@@ -1,6 +1,6 @@
 import re
 from collections import Counter, defaultdict
-from typing import List, Dict, Set, Tuple
+from typing import List, Dict, Set
 
 from app.models import Post, WordFrequency, UserSummary
 
