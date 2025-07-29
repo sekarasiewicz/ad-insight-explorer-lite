@@ -1,6 +1,56 @@
 // API Response Types
-export type HelloResponse = {
-  message: string
+
+// Post-related types
+export type Post = {
+  userId: number
+  id: number
+  title: string
+  body: string
+}
+
+export type PostsResponse = {
+  posts: Post[]
+  total: number
+}
+
+// Anomaly-related types
+export type Anomaly = {
+  userId: number
+  id: number
+  title: string
+  reason: string
+  details?: string
+}
+
+export type AnomaliesResponse = {
+  anomalies: Anomaly[]
+  total: number
+  summary: {
+    total_anomalies: number
+    by_reason: Record<string, number>
+    by_user: Record<string, number>
+    unique_users_affected: number
+  }
+}
+
+// Summary-related types
+export type UserSummary = {
+  userId: number
+  uniqueWordCount: number
+  totalPosts: number
+  uniqueWords: string[]
+}
+
+export type WordFrequency = {
+  word: string
+  count: number
+}
+
+export type SummaryResponse = {
+  topUsers: UserSummary[]
+  mostFrequentWords: WordFrequency[]
+  totalPosts: number
+  totalUsers: number
 }
 
 // Error Types

@@ -1,4 +1,3 @@
-import pytest
 import os
 from app.config import Settings, load_config
 
