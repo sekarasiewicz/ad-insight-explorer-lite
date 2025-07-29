@@ -25,16 +25,15 @@ This application processes data from the JSONPlaceholder API to identify anomali
 
 ### Prerequisites
 
-- Docker
-- Docker Compose
+- Docker and Docker Compose
+- Node.js 18+ (for local development)
+- Python 3.8+ (for local development)
 
 ### Running the Application
 
-#### Development Mode
-
 ```bash
-# Run development environment with hot reload
-make run-docker-dev
+# Run application with Docker
+make run-docker
 ```
 
 Access the application:
@@ -42,16 +41,15 @@ Access the application:
 - **Backend API**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/docs
 
-#### Production Mode
+### Local Development
 
 ```bash
-# Run production environment
-make run-docker-prod
-```
+# Backend (from backend/ directory)
+python3 -m uvicorn app.main:app --reload --port 8000
 
-Access the application:
-- **Frontend**: http://localhost:80
-- **Backend API**: http://localhost:8000
+# Frontend (from frontend/ directory)
+npm run dev
+```
 
 ## 📊 API Endpoints
 
@@ -169,8 +167,7 @@ ad-insight-explorer-lite/
 │   │   ├── services/             # API services
 │   │   └── types/                # TypeScript types
 │   └── tests/                    # Frontend tests
-├── docker-compose.dev.yml        # Development environment
-├── docker-compose.prod.yml       # Production environment
+├── docker-compose.yml            # Docker setup
 └── Makefile                      # Build and run commands
 ```
 
@@ -178,21 +175,17 @@ ad-insight-explorer-lite/
 
 ```bash
 # Build and run
-make build-docker                 # Build Docker images
-make run-docker-dev              # Run development environment
-make run-docker-prod             # Run production environment
+make build-docker                # Build Docker images
+make run-docker                  # Run application with Docker
 make stop-docker                 # Stop all containers
 
 # Testing
 make test                        # Run frontend tests locally
-make test-coverage               # Run tests with coverage
-make test-docker                 # Run frontend tests in Docker
-make test-backend-docker         # Run backend tests in Docker
+make test-backend                # Run backend tests locally
+make test-coverage               # Run frontend tests with coverage
 
 # Development
-make test-watch                  # Run tests in watch mode
-make test-docker-watch           # Run Docker tests in watch mode
-make test-backend-docker-watch   # Run backend tests in watch mode
+make test-watch                  # Run frontend tests in watch mode
 
 # Cleanup
 make clean                       # Clean up Docker resources
@@ -214,10 +207,10 @@ make clean                       # Clean up Docker resources
 
 ```bash
 # Backend tests
-make test-backend-docker
+make test-backend
 
 # Frontend tests
-make test-docker
+make test
 
 # All tests with coverage
 make test-coverage
@@ -225,16 +218,16 @@ make test-coverage
 
 ## 🚀 Deployment
 
-### Production Deployment
+### Docker Deployment
 
 ```bash
-make run-docker-prod
+make run-docker
 ```
 
 This starts:
 - **Backend API**: FastAPI server on port 8000
-- **Frontend**: Caddy web server on port 80
-- **All services**: Running in production mode with optimized settings
+- **Frontend**: Vite dev server on port 3000
+- **All services**: Running with hot reload for development
 
 ### Environment Configuration
 

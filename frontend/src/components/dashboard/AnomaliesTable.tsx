@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useId, useState } from 'react'
 import { filterAndSortAnomalies, getReasonLabel } from '@/lib/anomaliesUtils'
 import type { Anomaly } from '@/types'
 import { AnomaliesFilters } from './AnomaliesFilters'
@@ -17,21 +17,11 @@ export function AnomaliesTable({
   selectedUserId,
 }: AnomaliesTableProps) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<'id' | 'userId' | 'title' | 'reason'>(
     'id'
   )
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const searchId = useId()
-
-  // Debounce search term
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm)
-    }, 300) // 300ms delay
-
-    return () => clearTimeout(timer)
-  }, [searchTerm])
 
   const handleSort = (column: typeof sortBy) => {
     if (sortBy === column) {
@@ -48,7 +38,7 @@ export function AnomaliesTable({
 
   const filteredAndSortedAnomalies = filterAndSortAnomalies(
     anomalies,
-    debouncedSearchTerm,
+    searchTerm,
     sortBy,
     sortOrder
   )

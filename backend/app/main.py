@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.utils.logger import logger
+
 
 # Import API routes
 from app.api.routes import posts, anomalies, summary
@@ -11,13 +11,13 @@ from app.api.routes import posts, anomalies, summary
 async def lifespan(app: FastAPI):
     """Lifespan event handler for startup and shutdown events"""
     # Startup
-    logger.info("Starting Ad Insights Explorer API")
-    logger.info("Server is ready to serve requests")
+    print("Starting Ad Insights Explorer API")
+    print("Server is ready to serve requests")
 
     yield
 
     # Shutdown
-    logger.info("Shutting down Ad Insights Explorer API")
+    print("Shutting down Ad Insights Explorer API")
 
 
 # Create FastAPI app with lifespan

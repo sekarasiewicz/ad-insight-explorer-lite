@@ -1,8 +1,6 @@
 from collections import defaultdict
 from typing import List, Dict, Set
 from app.models import Post, Anomaly
-from app.services.text_analyzer import text_analyzer
-from app.utils.logger import logger
 
 
 class AnomalyDetector:
@@ -11,7 +9,6 @@ class AnomalyDetector:
     def __init__(self):
         self.short_title_threshold = 15
         self.bot_detection_threshold = 5
-        self.similarity_threshold = 0.8
 
     def detect_anomalies(self, posts: List[Post]) -> List[Anomaly]:
         """
@@ -37,7 +34,7 @@ class AnomalyDetector:
         bot_anomalies = self._detect_bot_like_behavior(posts)
         anomalies.extend(bot_anomalies)
 
-        logger.info(f"Detected {len(anomalies)} total anomalies")
+        print(f"Detected {len(anomalies)} total anomalies")
         return anomalies
 
     def _detect_short_titles(self, posts: List[Post]) -> List[Anomaly]:
@@ -63,7 +60,7 @@ class AnomalyDetector:
                 )
                 anomalies.append(anomaly)
 
-        logger.info(f"Detected {len(anomalies)} posts with short titles")
+        print(f"Detected {len(anomalies)} posts with short titles")
         return anomalies
 
     def _detect_duplicate_titles(self, posts: List[Post]) -> List[Anomaly]:
@@ -101,12 +98,13 @@ class AnomalyDetector:
                 )
                 anomalies.append(anomaly)
 
-        logger.info(f"Detected {len(anomalies)} posts with duplicate titles")
+        print(f"Detected {len(anomalies)} posts with duplicate titles")
         return anomalies
 
     def _detect_bot_like_behavior(self, posts: List[Post]) -> List[Anomaly]:
         """
         Detect users with more than threshold posts having similar titles
+        Simplified: Just check for exact duplicate titles per user
 
         Args:
             posts: List of posts to analyze
@@ -115,99 +113,34 @@ class AnomalyDetector:
             List of Anomaly objects for bot-like behavior
         """
         anomalies = []
-        user_posts: Dict[int, List[Post]] = defaultdict(list)
+        user_titles: Dict[int, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
 
-        # Group posts by user
+        # Count occurrences of each title per user
         for post in posts:
-            user_posts[post.userId].append(post)
+            user_titles[post.userId][post.title] += 1
 
-        # Analyze each user's posts for similar titles
-        for user_id, user_post_list in user_posts.items():
-            if len(user_post_list) < self.bot_detection_threshold:
-                continue
+        # Find users with multiple posts having the same title
+        for user_id, title_counts in user_titles.items():
+            for title, count in title_counts.items():
+                if count >= self.bot_detection_threshold:
+                    # Find all posts with this title for this user
+                    user_posts_with_title = [
+                        p for p in posts if p.userId == user_id and p.title == title
+                    ]
 
-            # Find similar titles within this user's posts
-            similar_groups = self._find_similar_title_groups(user_post_list)
-
-            for group in similar_groups:
-                if len(group) >= self.bot_detection_threshold:
-                    # This user has bot-like behavior
-                    for post in group:
+                    # Mark all these posts as bot-like behavior
+                    for post in user_posts_with_title:
                         anomaly = Anomaly(
                             userId=post.userId,
                             id=post.id,
                             title=post.title,
                             reason="bot_like_behavior",
-                            details=f"User has {len(group)} posts with similar titles (similarity >= {self.similarity_threshold})",
+                            details=f"User has {count} posts with identical title",
                         )
                         anomalies.append(anomaly)
 
-        logger.info(f"Detected {len(anomalies)} posts with bot-like behavior")
+        print(f"Detected {len(anomalies)} posts with bot-like behavior")
         return anomalies
-
-    def _find_similar_title_groups(self, posts: List[Post]) -> List[List[Post]]:
-        """
-        Find groups of posts with similar titles
-
-        Args:
-            posts: List of posts to analyze
-
-        Returns:
-            List of groups, where each group contains posts with similar titles
-        """
-        if len(posts) < 2:
-            return []
-
-        # Use the text analyzer to find similar pairs
-        similar_pairs = text_analyzer.find_similar_titles(
-            posts, self.similarity_threshold
-        )
-
-        # Group posts by similarity
-        groups = []
-        processed_posts = set()
-
-        for post1, post2, similarity in similar_pairs:
-            # Find or create group for post1
-            group1 = None
-            for group in groups:
-                if post1 in group:
-                    group1 = group
-                    break
-
-            # Find or create group for post2
-            group2 = None
-            for group in groups:
-                if post2 in group:
-                    group2 = group
-                    break
-
-            if group1 is None and group2 is None:
-                # Create new group
-                new_group = [post1, post2]
-                groups.append(new_group)
-            elif group1 is None:
-                # Add post1 to group2
-                group2.append(post1)
-            elif group2 is None:
-                # Add post2 to group1
-                group1.append(post2)
-            elif group1 != group2:
-                # Merge groups
-                group1.extend(group2)
-                groups.remove(group2)
-
-        # Add posts that weren't part of any similar pair
-        for post in posts:
-            if not any(post in group for group in groups):
-                groups.append([post])
-
-        # Filter groups that meet the threshold
-        threshold_groups = [
-            group for group in groups if len(group) >= self.bot_detection_threshold
-        ]
-
-        return threshold_groups
 
     def get_anomaly_summary(self, anomalies: List[Anomaly]) -> Dict:
         """

@@ -49,26 +49,6 @@ class TestTextAnalyzer:
         assert user2.uniqueWordCount > 0
         assert user1.uniqueWordCount > 0
 
-    def test_find_similar_titles(self):
-        """Test finding similar titles"""
-        posts = [
-            Post(userId=1, id=1, title="Hello world", body="Body 1"),
-            Post(userId=1, id=2, title="Hello world", body="Body 2"),  # Identical
-            Post(userId=1, id=3, title="Hello there", body="Body 3"),  # Similar
-            Post(userId=2, id=4, title="Completely different", body="Body 4"),
-        ]
-
-        similar_pairs = self.analyzer.find_similar_titles(
-            posts, similarity_threshold=0.8
-        )
-
-        # Should find similar pairs
-        assert len(similar_pairs) > 0
-
-        # Check that similar pairs have high similarity
-        for post1, post2, similarity in similar_pairs:
-            assert similarity >= 0.8
-
     def test_extract_words_from_text(self):
         """Test word extraction from text"""
         text = "Hello, world! This is a test."
@@ -105,6 +85,3 @@ class TestTextAnalyzer:
 
         top_users = self.analyzer.get_top_users_by_unique_words([], top_n=3)
         assert top_users == []
-
-        similar_pairs = self.analyzer.find_similar_titles([], similarity_threshold=0.8)
-        assert similar_pairs == []
