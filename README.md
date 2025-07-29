@@ -247,20 +247,26 @@ This starts:
 - **Frontend**: Caddy web server on port 80 (with automatic HTTPS support)
 - **All services**: Running in production mode with optimized settings
 
-### Railway Deployment (Recommended)
+### DigitalOcean App Platform Deployment (Recommended)
 
-For production deployment, we recommend using [Railway](https://railway.com/):
+For production deployment, we recommend using [DigitalOcean App Platform](https://digitalocean.com/products/app-platform):
 
-1. **Quick Deploy**: [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/new?template=https://github.com/your-username/ad-insight-explorer-lite)
+1. **Quick Deploy**: Follow the detailed guide in [DIGITALOCEAN_DEPLOYMENT.md](./DIGITALOCEAN_DEPLOYMENT.md)
 
-2. **Manual Setup**: Follow the detailed guide in [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md)
+2. **Automated Deployment**: Run the deployment script:
+   ```bash
+   ./deploy-digitalocean.sh
+   ```
 
-Railway provides:
-- ✅ Automatic HTTPS and custom domains
-- ✅ Built-in monitoring and observability
-- ✅ Zero-downtime deployments
-- ✅ Automatic scaling
-- ✅ GitHub integration with auto-deploy
+DigitalOcean App Platform provides:
+- ✅ Simple Git-based deployments
+- ✅ Native Docker support
+- ✅ Automatic SSL certificates
+- ✅ Global CDN and auto-scaling
+- ✅ Cost-effective pricing ($5/month per service)
+- ✅ Built-in monitoring and logs
+
+
 
 ### Environment Configuration
 
@@ -276,9 +282,9 @@ LOG_LEVEL=INFO
 SHORT_TITLE_THRESHOLD=15
 BOT_DETECTION_THRESHOLD=5
 
-# Railway-specific (auto-configured)
-PORT=$PORT
-BACKEND_URL=https://your-backend-service.railway.app
+# DigitalOcean-specific (auto-configured)
+PORT=8080
+BACKEND_URL=https://your-backend-service.ondigitalocean.app
 ```
 
 ## 📋 Recruitment Task Requirements

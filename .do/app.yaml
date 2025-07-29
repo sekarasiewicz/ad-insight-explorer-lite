@@ -1,0 +1,54 @@
+name: ad-insight-explorer-lite
+services:
+  - name: backend
+    source_dir: /
+    dockerfile_path: Dockerfile
+    github:
+      repo: sekarasiewicz/ad-insight-explorer-lite
+      branch: main
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      - key: SERVER_PORT
+        value: "8080"
+      - key: SERVER_HOST
+        value: "0.0.0.0"
+      - key: LOG_LEVEL
+        value: "INFO"
+
+  - name: frontend
+    source_dir: /
+    dockerfile_path: frontend/Dockerfile.prod
+    github:
+      repo: sekarasiewicz/ad-insight-explorer-lite
+      branch: main
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      - key: PORT
+        value: "8080"
+      - key: BACKEND_URL
+        value: "https://backend.${APP_DOMAIN}"
+
+ingress:
+  rules:
+    - match:
+        path:
+          prefix: "/api"
+      component:
+        name: backend
+    - match:
+        path:
+          prefix: "/health"
+      component:
+        name: backend
+    - match:
+        path:
+          prefix: "/docs"
+      component:
+        name: backend
+    - match:
+        path:
+          prefix: "/"
+      component:
+        name: frontend 
