@@ -48,37 +48,3 @@ async def get_anomalies(
         raise HTTPException(
             status_code=500, detail=f"Failed to detect anomalies: {str(e)}"
         )
-
-
-@router.get("/summary")
-async def get_anomaly_summary(
-    limit: Optional[int] = Query(None, description="Limit number of posts to analyze"),
-):
-    """
-    Get summary statistics for anomalies
-
-    Args:
-        limit: Optional limit on number of posts to analyze
-
-    Returns:
-        Dictionary with anomaly summary statistics
-    """
-    try:
-        logger.info(f"Getting anomaly summary with limit: {limit}")
-
-        # Fetch posts
-        posts = await jsonplaceholder_service.get_posts(limit=limit)
-
-        # Detect anomalies
-        anomalies = anomaly_detector.detect_anomalies(posts)
-
-        # Generate summary
-        summary = anomaly_detector.get_anomaly_summary(anomalies)
-
-        return summary
-
-    except Exception as e:
-        logger.error(f"Error getting anomaly summary: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Failed to get anomaly summary: {str(e)}"
-        )

@@ -210,6 +210,19 @@ make clean                       # Clean up Docker resources
 - **Integration Tests**: API service integration
 - **Coverage**: Comprehensive test coverage for critical components
 
+### Running Tests
+
+```bash
+# Backend tests
+make test-backend-docker
+
+# Frontend tests
+make test-docker
+
+# All tests with coverage
+make test-coverage
+```
+
 ## 🚀 Deployment
 
 ### Production Deployment
