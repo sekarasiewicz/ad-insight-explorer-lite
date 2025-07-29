@@ -1,4 +1,4 @@
-FROM node:22-alpine AS builder
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -11,18 +11,8 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Expose port for Vite dev server
+EXPOSE 3000
 
-# Production stage
-FROM caddy:2-alpine
-
-# Copy built files to Caddy
-COPY --from=builder /app/dist /usr/share/caddy/html
-
-# Copy Caddy configuration
-COPY Caddyfile /etc/caddy/Caddyfile
-
-EXPOSE 80
-
-CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"] 
+# Start Vite dev server
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"] 

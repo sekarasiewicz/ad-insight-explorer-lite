@@ -31,8 +31,9 @@ This application processes data from the JSONPlaceholder API to identify anomali
 
 ### Running the Application
 
+#### Development Mode
 ```bash
-# Run application with Docker
+# Run application with Docker (development)
 make run-docker
 ```
 
@@ -40,6 +41,17 @@ Access the application:
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/docs
+
+#### Production Mode
+```bash
+# Run application with Docker (production)
+make run-docker-prod
+```
+
+Access the application:
+- **Frontend**: http://localhost (port 80)
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost/docs
 
 ### Local Development
 
@@ -158,7 +170,8 @@ ad-insight-explorer-lite/
 │   │   │   └── jsonplaceholder_service.py
 │   │   ├── models.py             # Pydantic models
 │   │   └── main.py               # FastAPI app
-│   └── tests/                    # Backend tests
+│   ├── tests/                    # Backend tests
+│   └── Dockerfile                # Backend container
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -166,8 +179,12 @@ ad-insight-explorer-lite/
 │   │   │   └── ui/               # shadcn/ui components
 │   │   ├── services/             # API services
 │   │   └── types/                # TypeScript types
-│   └── tests/                    # Frontend tests
-├── docker-compose.yml            # Docker setup
+│   ├── tests/                    # Frontend tests
+│   ├── Dockerfile                # Frontend dev container
+│   ├── Dockerfile.prod           # Frontend production container
+│   └── Caddyfile                 # Caddy configuration
+├── docker-compose.yml            # Development Docker setup
+├── docker-compose.prod.yml       # Production Docker setup
 └── Makefile                      # Build and run commands
 ```
 
@@ -176,7 +193,8 @@ ad-insight-explorer-lite/
 ```bash
 # Build and run
 make build-docker                # Build Docker images
-make run-docker                  # Run application with Docker
+make run-docker                  # Run application with Docker (development)
+make run-docker-prod             # Run application with Docker (production)
 make stop-docker                 # Stop all containers
 
 # Testing
@@ -226,8 +244,8 @@ make run-docker
 
 This starts:
 - **Backend API**: FastAPI server on port 8000
-- **Frontend**: Vite dev server on port 3000
-- **All services**: Running with hot reload for development
+- **Frontend**: Caddy web server on port 80 (with automatic HTTPS support)
+- **All services**: Running in production mode with optimized settings
 
 ### Environment Configuration
 

@@ -1,0 +1,21 @@
+# API server
+:80 {
+	handle /api/* {
+		reverse_proxy backend:8000
+	}
+
+	handle /health {
+		reverse_proxy backend:8000
+	}
+
+	handle /docs {
+		reverse_proxy backend:8000
+	}
+
+	# Fallback to React app
+	handle /* {
+		root * /usr/share/caddy/html
+		file_server
+		try_files {path} /index.html
+	}
+} 

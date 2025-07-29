@@ -1,4 +1,4 @@
-.PHONY: help build-docker run-docker stop-docker clean test test-watch test-coverage test-backend
+.PHONY: help build-docker run-docker run-docker-prod stop-docker clean test test-watch test-coverage test-backend
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -9,11 +9,15 @@ help: ## Show this help message
 build-docker: ## Build Docker images
 	docker compose build
 
-run-docker: ## Run application with Docker
+run-docker: ## Run application with Docker (development)
 	docker compose up --build
+
+run-docker-prod: ## Run application with Docker (production)
+	docker compose -f docker-compose.prod.yml up --build -d
 
 stop-docker: ## Stop Docker containers
 	docker compose down
+	docker compose -f docker-compose.prod.yml down
 
 clean: ## Clean up generated files
 	docker system prune -f
@@ -28,4 +32,4 @@ test-coverage: ## Run frontend tests with coverage
 	cd frontend && npm run test:coverage
 
 test-backend: ## Run backend tests locally
-	cd backend && python3 -m pytest tests/ -v
+	cd backend && ./venv/bin/python -m pytest tests/ -v
