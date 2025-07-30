@@ -26,7 +26,7 @@ echo ""
 # Build backend locally (this works)
 echo "3. Building backend image..."
 cd backend
-if docker build -t ad-insight-backend:latest .; then
+if docker build -t sekarasiewicz/ad-insight-backend:latest .; then
     echo "✅ Backend built successfully"
 else
     echo "❌ Backend build failed"

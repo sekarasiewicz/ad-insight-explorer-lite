@@ -31,8 +31,8 @@ echo ""
 
 # Pull latest images from Docker Hub
 echo "3. Pulling latest images from Docker Hub..."
-docker pull sebastiankarasiewicz/ad-insight-backend:latest
-docker pull sebastiankarasiewicz/ad-insight-frontend:latest
+docker pull sekarasiewicz/ad-insight-backend:latest
+docker pull sekarasiewicz/ad-insight-frontend:latest
 echo ""
 
 # Start the application

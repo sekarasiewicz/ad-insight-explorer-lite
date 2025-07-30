@@ -1,6 +1,6 @@
 services:
   backend:
-    image: ad-insight-backend:latest
+    image: sekarasiewicz/ad-insight-backend:latest
     ports:
       - "8000:8000"
     environment:
@@ -12,9 +12,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: sekarasiewicz/ad-insight-frontend:latest
     ports:
       - "80:80"
     depends_on:

@@ -31,14 +31,11 @@ docker-login: ## Login to Docker Hub
 docker-build-push: ## Build and push images to Docker Hub
 	@echo "Building and pushing images to Docker Hub..."
 	@echo "Make sure you're logged in with: make docker-login"
-	docker build -t ad-insight-backend:latest ./backend
-	docker build -t ad-insight-frontend:latest ./frontend
-	@echo "✅ Images built successfully!"
-	@echo "To push to your registry, run:"
-	@echo "  docker tag ad-insight-backend:latest YOUR_USERNAME/ad-insight-backend:latest"
-	@echo "  docker tag ad-insight-frontend:latest YOUR_USERNAME/ad-insight-frontend:latest"
-	@echo "  docker push YOUR_USERNAME/ad-insight-backend:latest"
-	@echo "  docker push YOUR_USERNAME/ad-insight-frontend:latest"
+	docker build -t sekarasiewicz/ad-insight-backend:latest ./backend
+	docker build -t sekarasiewicz/ad-insight-frontend:latest ./frontend
+	docker push sekarasiewicz/ad-insight-backend:latest
+	docker push sekarasiewicz/ad-insight-frontend:latest
+	@echo "✅ Images pushed to Docker Hub successfully!"
 
 docker-pull-run: ## Pull images from Docker Hub and run
 	@echo "Pulling images from Docker Hub and running..."
