@@ -1,4 +1,4 @@
-.PHONY: help build-docker run-docker stop-docker clean test test-watch test-coverage test-backend build-docker-prod run-docker-prod stop-docker-prod docker-build-push docker-pull-run docker-login deploy-simple
+.PHONY: help build-docker run-docker stop-docker clean test test-watch test-coverage test-backend build-docker-prod run-docker-prod stop-docker-prod docker-build-push docker-pull-run docker-login deploy-simple deploy-droplet
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -28,14 +28,19 @@ docker-login: ## Login to Docker Hub
 	@echo "Please login to Docker Hub:"
 	docker login
 
-docker-build-push: ## Build and push images to Docker Hub
-	@echo "Building and pushing images to Docker Hub..."
+docker-build-push: ## Build and push multi-arch images to Docker Hub
+	@echo "Building and pushing multi-architecture images to Docker Hub..."
 	@echo "Make sure you're logged in with: make docker-login"
-	docker build -t sekarasiewicz/ad-insight-backend:latest ./backend
-	docker build -t sekarasiewicz/ad-insight-frontend:latest ./frontend
-	docker push sekarasiewicz/ad-insight-backend:latest
-	docker push sekarasiewicz/ad-insight-frontend:latest
-	@echo "✅ Images pushed to Docker Hub successfully!"
+	@echo "This will build for both x86_64 and ARM64 architectures"
+	
+	# Build and push backend for multiple architectures
+	docker buildx create --use --name multiarch-builder || true
+	docker buildx build --platform linux/amd64,linux/arm64 -t sekarasiewicz/ad-insight-backend:latest ./backend --push
+	
+	# Build and push frontend for multiple architectures
+	docker buildx build --platform linux/amd64,linux/arm64 -t sekarasiewicz/ad-insight-frontend:latest ./frontend --push
+	
+	@echo "✅ Multi-architecture images pushed to Docker Hub successfully!"
 
 docker-pull-run: ## Pull images from Docker Hub and run
 	@echo "Pulling images from Docker Hub and running..."
@@ -45,6 +50,10 @@ docker-pull-run: ## Pull images from Docker Hub and run
 deploy-simple: ## Deploy with backend from registry, frontend built locally
 	@echo "Deploying with simple approach..."
 	./deploy-simple.sh
+
+deploy-droplet: ## Deploy multi-architecture images to droplet
+	@echo "Deploying multi-architecture images to droplet..."
+	./deploy-droplet-multiarch.sh
 
 clean: ## Clean up generated files
 	docker system prune -f
