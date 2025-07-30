@@ -1,18 +1,21 @@
-# Build stage
+# Memory-optimized build for small droplets
 FROM node:22-alpine AS builder
 
 WORKDIR /app
 
+# Set Node.js memory limits for small droplets
+ENV NODE_OPTIONS="--max-old-space-size=256"
+
 # Copy package files
 COPY package*.json ./
 
-# Install all dependencies (including dev dependencies needed for build)
+# Install dependencies with memory optimization
 RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Build the application
+# Build the application with memory optimization
 RUN npm run build
 
 # Production stage

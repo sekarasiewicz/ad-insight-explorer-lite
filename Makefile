@@ -1,4 +1,4 @@
-.PHONY: help build-docker run-docker stop-docker clean test test-watch test-coverage test-backend build-docker-prod run-docker-prod stop-docker-prod
+.PHONY: help build-docker run-docker stop-docker clean test test-watch test-coverage test-backend build-docker-prod run-docker-prod stop-docker-prod docker-build-push docker-pull-run docker-login deploy-simple
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -23,6 +23,31 @@ run-docker-prod: ## Run application with Docker for prod/production
 
 stop-docker-prod: ## Stop Docker containers for prod/production
 	docker compose -f docker-compose.prod.yml down
+
+docker-login: ## Login to Docker Hub
+	@echo "Please login to Docker Hub:"
+	docker login
+
+docker-build-push: ## Build and push images to Docker Hub
+	@echo "Building and pushing images to Docker Hub..."
+	@echo "Make sure you're logged in with: make docker-login"
+	docker build -t ad-insight-backend:latest ./backend
+	docker build -t ad-insight-frontend:latest ./frontend
+	@echo "✅ Images built successfully!"
+	@echo "To push to your registry, run:"
+	@echo "  docker tag ad-insight-backend:latest YOUR_USERNAME/ad-insight-backend:latest"
+	@echo "  docker tag ad-insight-frontend:latest YOUR_USERNAME/ad-insight-frontend:latest"
+	@echo "  docker push YOUR_USERNAME/ad-insight-backend:latest"
+	@echo "  docker push YOUR_USERNAME/ad-insight-frontend:latest"
+
+docker-pull-run: ## Pull images from Docker Hub and run
+	@echo "Pulling images from Docker Hub and running..."
+	docker compose -f docker-compose.registry.yml up -d
+	@echo "✅ Application running from Docker Hub images!"
+
+deploy-simple: ## Deploy with backend from registry, frontend built locally
+	@echo "Deploying with simple approach..."
+	./deploy-simple.sh
 
 clean: ## Clean up generated files
 	docker system prune -f

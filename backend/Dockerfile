@@ -1,29 +1,23 @@
-# Multi-stage build for better reliability
-FROM python:3.11-slim AS builder
-
-WORKDIR /app
-
-# Install build dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements and install dependencies
-COPY requirements.txt .
-
-# Install dependencies with multiple retry attempts
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org -r requirements.txt
-
-# Production stage
+# Memory-optimized build for small droplets
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy installed packages from builder stage
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
+# Install only essential build dependencies with memory optimization
+RUN apt-get update && apt-get install -y \
+    gcc \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Configure pip for memory efficiency
+RUN pip config set global.timeout 600 && \
+    pip config set global.retries 5
+
+# Copy requirements and install dependencies with memory optimization
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org -r requirements.txt
 
 # Copy application code
 COPY . .
