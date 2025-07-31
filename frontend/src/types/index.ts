@@ -101,3 +101,7 @@ export type AsyncEventHandler<T = Event> = (event: T) => Promise<void>
 // Storage Types
 export type StorageKey = 'theme' | 'userPreferences'
 export type StorageValue = string | number | boolean | object
+
+// Table Types
+export type SortColumn = 'id' | 'userId' | 'title' | 'reason'
+export type SortOrder = 'asc' | 'desc'

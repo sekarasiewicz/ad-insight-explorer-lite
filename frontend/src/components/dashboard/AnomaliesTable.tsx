@@ -1,6 +1,6 @@
 import { useId, useState } from 'react'
 import { filterAndSortAnomalies, getReasonLabel } from '@/lib/anomaliesUtils'
-import type { Anomaly } from '@/types'
+import type { Anomaly, SortColumn, SortOrder } from '@/types'
 import { AnomaliesFilters } from './AnomaliesFilters'
 import { AnomaliesTableBody } from './AnomaliesTableBody'
 import { AnomaliesTableHeader } from './AnomaliesTableHeader'
@@ -17,13 +17,11 @@ export function AnomaliesTable({
   selectedUserId,
 }: AnomaliesTableProps) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [sortBy, setSortBy] = useState<'id' | 'userId' | 'title' | 'reason'>(
-    'id'
-  )
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [sortBy, setSortBy] = useState<SortColumn>('id')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
   const searchId = useId()
 
-  const handleSort = (column: typeof sortBy) => {
+  const handleSort = (column: SortColumn) => {
     if (sortBy === column) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
     } else {

@@ -1,8 +1,6 @@
 import { FileText, Filter, Hash, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-
-type SortColumn = 'id' | 'userId' | 'title' | 'reason'
-type SortOrder = 'asc' | 'desc'
+import type { SortColumn, SortOrder } from '@/types'
 
 type AnomaliesTableHeaderProps = {
   sortBy: SortColumn
